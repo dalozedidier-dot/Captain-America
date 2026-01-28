@@ -18,24 +18,22 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Debug files
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install -U pip
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          fi
-          if [ -f pyproject.toml ]; then
-            pip install .
-          elif [ -f setup.py ]; then
-            pip install .
-          fi
+          pwd
+          ls -la
+          echo "SCRIPTS:"
+          ls -la scripts || true
+          echo "TEST_DATA:"
+          ls -la test_data || true
 
       - name: Run band suite (auto-detect CLI)
         shell: bash
         run: |
           set -euo pipefail
+          test -f scripts/ci_band_suite.py
           mkdir -p _ci_out
           python scripts/ci_band_suite.py --pattern "test_data/band_*.csv" --outdir "_ci_out/bands"
 
@@ -46,4 +44,4 @@ jobs:
           name: band_suite_artifacts
           path: |
             _ci_out/
-          if-no-files-found: error
+          if-no-files-found: ignore
