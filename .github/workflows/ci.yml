@@ -1,0 +1,38 @@
+name: SOST-Framework CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+env:
+  PYTHONHASHSEED: "0"
+  TZ: "UTC"
+  LC_ALL: "C.UTF-8"
+  LANG: "C.UTF-8"
+
+jobs:
+  lint-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile (sanity)
+        run: |
+          python -m compileall -q .
+
+      - name: Import smoke
+        run: |
+          python - <<'PY'
+          import sost
+          from sost import core, dd_coherence, dd_restoration, equilibrium
+          print('OK imports:', sost.__name__, core.__name__)
+          PY
