@@ -53,7 +53,8 @@ jobs:
           mkdir -p _ci_out
 
           if [ -f scripts/run_sost.py ] && [ -f test_data/minimal_timeseries.csv ]; then
-            python scripts/run_sost.py \
+            # Important: garantir que la racine du repo est dans le PYTHONPATH
+            PYTHONPATH=. python scripts/run_sost.py \
               --input test_data/minimal_timeseries.csv \
               --out _ci_out/run1
             echo "OK: SOST runner executed"
